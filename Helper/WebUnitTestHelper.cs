@@ -1,3 +1,22 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+//    Suflow, Enterprise Applications
+//    Copyright (C) 2015 Suflow
+//
+//    This program is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Affero General Public License as
+//    published by the Free Software Foundation, either version 3 of the
+//    License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Affero General Public License for more details.
+//
+//    You should have received a copy of the GNU Affero General Public License
+//    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+////////////////////////////////////////////////////////////////////////////////
 //using System;
 //using System.Linq;
 //using System.Web.UI.HtmlControls;
@@ -16,7 +35,7 @@
 
 //        private TextBox _messageTextBox;
 
-//        private HtmlGenericControl _htmlMessageHolder; 
+//        private HtmlGenericControl _htmlMessageHolder;
 
 //        private HtmlTable CreateInnerTable()
 //        {
@@ -49,10 +68,10 @@
 //            lblNameCell.Style.Add("width", "200px");
 
 //            var highlight = from m in _testMethodsHolder.GetType().GetMethods()
-//                    where m.Name.Equals(testName)
-//                    from a in m.GetCustomAttributes(true).OfType<HighlightAttribute>()
-//                    select m;
-//            if(highlight.Count() > 0)
+//                            where m.Name.Equals(testName)
+//                            from a in m.GetCustomAttributes(true).OfType<HighlightAttribute>()
+//                            select m;
+//            if (highlight.Count() > 0)
 //                lblNameCell.Style.Add("color", "red");
 //            testRow.Cells.Add(lblNameCell);
 
@@ -128,7 +147,7 @@
 //        public WebUnitTestHelper(object testMethodsHolder)
 //        {
 //            _testMethodsHolder = testMethodsHolder;
-//        } 
+//        }
 
 //        protected override void OnLoad(EventArgs e)
 //        {
@@ -164,7 +183,7 @@
 //            _htmlMessageHolder = new HtmlGenericControl("div")
 //            {
 //                ID = "htmlMessageHolder",
-//                Visible = false, 
+//                Visible = false,
 //                EnableViewState = false
 //            };
 //            _htmlMessageHolder.Style.Add("overflow", "auto");
@@ -176,8 +195,8 @@
 //        public class UnitTestAttribute : Attribute
 //        {
 //        }
-
-//        public class HighlightAttribute: Attribute
+        
+//        public class HighlightAttribute : Attribute
 //        {
 //        }
 //    }

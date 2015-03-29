@@ -60,18 +60,15 @@
     <Compile Include="Extension\ObjectExtensions.cs" />
     <Compile Include="Extension\StringExtensions.cs" />
     <Compile Include="Extension\TypeExtensions.cs" />
-    <Compile Include="Extension\WebBrowserExtensions.cs" />
     <Compile Include="Helper\BackgroundTask.cs" />
     <Compile Include="Helper\CompilationAndExecutionHelper.cs" />
     <Compile Include="Helper\ConfigurationHelperBase.cs" />
     <Compile Include="Helper\CultureHelper.cs" />
-    <Compile Include="Helper\DevelopmentHelper.cs" />
     <Compile Include="Helper\DiskCleanupHelper.cs" />
     <Compile Include="Helper\EmailHelper.cs" />
     <Compile Include="Helper\ExcelHelper.cs" />
     <Compile Include="Helper\FolderHelper.cs" />
     <Compile Include="Helper\FileHelper.cs" />
-    <Compile Include="Helper\Ftp.cs" />
     <Compile Include="Helper\FtpHelper.cs" />
     <Compile Include="Helper\GoogleVisualizationPieChartHelper.cs" />
     <Compile Include="Helper\HtmlGenHelper.cs" />
@@ -85,7 +82,6 @@
     <Compile Include="Helper\SecurityHelper.cs" />
     <Compile Include="Helper\SqlServerHelper.cs" />
     <Compile Include="Helper\PerformanceHelper.cs" />
-    <Compile Include="Helper\TranslationHelper.cs" />
     <Compile Include="Helper\WebUnitTestHelper.cs" />
     <Compile Include="Helper\Wifi\Interop.cs" />
     <Compile Include="Helper\Wifi\WlanApi.cs" />
