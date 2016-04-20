@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 
-namespace Nop.Core.Caching
-{
+namespace Suflow.Common.Utils{
     /// <summary>
     /// Represents a MemoryCacheCache
+    /// See if it can be improved in future. Look at https://github.com/loresoft/EntityFramework.Extended/tree/master/Source/EntityFramework.Extended/Caching
     /// </summary>
-    public class MemoryCacheHelper
+    public class MemCacheHelper
     {
         protected ObjectCache Cache
         {

@@ -9,18 +9,23 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Suflow.Common.Utils</RootNamespace>
     <AssemblyName>Suflow.Common.Utils</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\BinariesSuflow\</OutputPath>
+    <IntermediateOutputPath>..\..\BinariesSuflow\obj\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,29 +34,85 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\BinariesThirdparty\EPPlus\4.0.4\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\BinariesThirdparty\DotNetZipLib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.9.0, Culture=neutral, PublicKeyToken=b32731d11ce58905">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BinariesThirdparty\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Quartz">
+      <HintPath>..\..\BinariesThirdparty\Quartz.NET\2.3.3\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Core.Presentation" />
+    <Reference Include="System.Activities.Presentation" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\EmailAttribute.cs" />
     <Compile Include="Attributes\MaxWordsAttribute.cs" />
     <Compile Include="Attributes\MustBeTrueAttribute.cs" />
     <Compile Include="Attributes\ResourceDisplayName.cs" />
+    <Compile Include="Extension\ListExtensions.cs" />
+    <Compile Include="Services\DatabaseService\Model\Database.cs" />
+    <Compile Include="Services\DatabaseService\Model\DatabaseServer.cs" />
+    <Compile Include="Services\DatabaseService\Model\DatabaseTable.cs" />
+    <Compile Include="Services\DatabaseService\Model\DatabaseTableField.cs" />
+    <Compile Include="Services\DatabaseService\Service\DatabaseService.cs" />
+    <Compile Include="Services\DatabaseService\Test\DatabaseServiceTest.cs" />
+    <Compile Include="Services\VisualizationService\D3VisualizationService.cs" />
+    <Compile Include="Services\VisualizationService\GoogleVisualizationPieChartHelper.cs" />
+    <Compile Include="Helper\ExchangeHelper.cs" />
+    <Compile Include="Helper\ExpressionHelper.cs" />
+    <Compile Include="Helper\ExpressionOptimizer.cs" />
+    <Compile Include="Helper\ExpressionFinder.cs" />
+    <Compile Include="Helper\HttpHelper.cs" />
+    <Compile Include="Services\MapReduce\MapperContext.cs" />
+    <Compile Include="Services\MapReduce\MapReduceService.cs" />
+    <Compile Include="Services\MapReduce\MapperBase.cs" />
+    <Compile Include="Services\MapReduce\ReducerBase.cs" />
+    <Compile Include="Services\MapReduce\ReducerContext.cs" />
+    <Compile Include="Services\NetworkService\NetworkNode.cs" />
+    <Compile Include="Services\Paging\IPagedListMetadata.cs" />
+    <Compile Include="Services\Paging\IPagedList.cs" />
+    <Compile Include="Services\Paging\PagedList.cs" />
+    <Compile Include="Services\Paging\PagedListMetadata.cs" />
+    <Compile Include="Services\ProfilingService\ProfilingContext.cs" />
+    <Compile Include="Services\ProfilingService\ProfilingSummary.cs" />
+    <Compile Include="Services\ProfilingService\TimeProfiler.cs" />
+    <Compile Include="Services\ProfilingService\MemoryProfiler.cs" />
+    <Compile Include="Services\ProfilingService\ProfilerBase.cs" />
+    <Compile Include="Services\Repository\Repository.cs" />
+    <Compile Include="Services\CodeService\CodeCompilationInfo.cs" />
+    <Compile Include="Services\CodeService\CodeExecutionInfo.cs" />
+    <Compile Include="Services\CodeService\CodeService.cs" />
+    <Compile Include="Extension\ByteArrayExtension.cs" />
+    <Compile Include="Extension\StreamExtension.cs" />
     <Compile Include="Extension\MethodInfoExtensions.cs" />
     <Compile Include="Extension\DataTableExtensions.cs" />
     <Compile Include="Extension\ExceptionExtensions.cs" />
@@ -61,18 +122,23 @@
     <Compile Include="Extension\StringExtensions.cs" />
     <Compile Include="Extension\TypeExtensions.cs" />
     <Compile Include="Helper\BackgroundTask.cs" />
-    <Compile Include="Helper\CompilationAndExecutionHelper.cs" />
+    <Compile Include="Helper\BackgroundWorkerHelper.cs" />
+    <Compile Include="Helper\ClipboardHelper.cs" />
     <Compile Include="Helper\ConfigurationHelperBase.cs" />
     <Compile Include="Helper\CultureHelper.cs" />
     <Compile Include="Helper\DiskCleanupHelper.cs" />
     <Compile Include="Helper\EmailHelper.cs" />
+    <Compile Include="Helper\ExcelHelperEPPlus.cs" />
     <Compile Include="Helper\ExcelHelper.cs" />
+    <Compile Include="Services\Repository\FileDataRepository.cs" />
     <Compile Include="Helper\FolderHelper.cs" />
     <Compile Include="Helper\FileHelper.cs" />
     <Compile Include="Helper\FtpHelper.cs" />
-    <Compile Include="Helper\GoogleVisualizationPieChartHelper.cs" />
     <Compile Include="Helper\HtmlGenHelper.cs" />
-    <Compile Include="Helper\MemoryCacheHelper.cs" />
+    <Compile Include="Helper\ImageHelper.cs" />
+    <Compile Include="Helper\MachineHelper.cs" />
+    <Compile Include="Helper\MemCacheHelper.cs" />
+    <Compile Include="Helper\MessageQueueHelper.cs" />
     <Compile Include="Helper\SqlHelper.cs" />
     <Compile Include="Helper\MSIHelper.cs" />
     <Compile Include="Helper\NativeMethodsHelper.cs" />
@@ -82,13 +148,71 @@
     <Compile Include="Helper\SecurityHelper.cs" />
     <Compile Include="Helper\SqlServerHelper.cs" />
     <Compile Include="Helper\PerformanceHelper.cs" />
+    <Compile Include="Helper\ToolboxBitmapAttributeHelper.cs" />
     <Compile Include="Helper\WebUnitTestHelper.cs" />
-    <Compile Include="Helper\Wifi\Interop.cs" />
-    <Compile Include="Helper\Wifi\WlanApi.cs" />
+    <Compile Include="Services\NetworkService\Interop.cs" />
+    <Compile Include="Services\NetworkService\NetworkService.cs" />
+    <Compile Include="Services\NetworkService\WlanApi.cs" />
     <Compile Include="Helper\WindowsServiceHelper.cs" />
+    <Compile Include="Services\SearchService\ElasticSearchService.cs" />
+    <Compile Include="Services\WorkflowService\WorkflowService.cs" />
     <Compile Include="Helper\WriteLock.cs" />
+    <Compile Include="Helper\XamlHelper.cs" />
     <Compile Include="Helper\XmlHelper.cs" />
+    <Compile Include="Helper\ZipHelper.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\ConfigurationService\ConfigurationService.cs" />
+    <Compile Include="Services\LogService\LogService.cs" />
+    <Compile Include="Services\LogService\WindowsEventLogger.cs" />
+    <Compile Include="Services\Repository\IRepository.cs" />
+    <Compile Include="Services\SearchService\FileSearchService.cs" />
+    <Compile Include="Services\ServiceLocator.cs" />
+    <Compile Include="Services\WorkflowService\Activities\ExecuteCodeSnippet.cs" />
+    <Compile Include="Services\WorkflowService\Activities\ReadStringFromFile.cs" />
+    <Compile Include="Services\WorkflowService\Activities\SendEmailActivity.cs" />
+    <Compile Include="Services\WorkflowService\Activities\WriteStringToFile.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\book.png" />
+    <Resource Include="Resources\print.png" />
+    <Resource Include="Resources\computer.png" />
+    <Resource Include="Resources\network.png" />
+    <Resource Include="Resources\floppy-disk.png" />
+    <Resource Include="Resources\folder.png" />
+    <Content Include="Resources\Readme.txt" />
+    <Resource Include="Resources\suflow.jpg" />
+    <Content Include="Services\AstrologyService\Readme.txt" />
+    <Content Include="Services\ImageAnalysisService\Readme.txt" />
+    <Content Include="Services\LicenseService\Readme.txt" />
+    <Content Include="Services\ProfilingService\Readme.txt" />
+    <Content Include="Services\Readme.txt" />
+    <Content Include="Services\CronService\Readme.txt" />
+    <Content Include="Services\TemplateService\Readme.txt" />
+    <Content Include="Services\NetworkService\Readme.txt" />
+    <Resource Include="Resources\notes.ico" />
+    <Resource Include="Resources\rss.ico" />
+    <Resource Include="Resources\html.ico" />
+    <Resource Include="Resources\database.ico" />
+    <Resource Include="Resources\wrench.ico" />
+    <Resource Include="Resources\mail.ico" />
+    <Resource Include="Resources\facebook.ico" />
+    <Resource Include="Resources\twitter.ico" />
+    <Resource Include="Resources\instagram.ico" />
+    <Resource Include="Resources\spotify.ico" />
+    <Resource Include="Resources\youtube.ico" />
+    <Resource Include="Resources\google.ico" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

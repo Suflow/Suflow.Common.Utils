@@ -20,10 +20,8 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Suflow.Common.Utils
 {
@@ -78,12 +76,14 @@ namespace Suflow.Common.Utils
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
-        //[DllImportAttribute("user32.dll")]
-        //public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
 
         [DllImport("winmm.dll", EntryPoint = "mciSendStringA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
         private static extern int mciSendString(string lpstrCommand, string lpstrReturnString, int uReturnLength, int hwndCallback);
-
 
         public static void GetActiveWindow(out string activeWindowAppName, out string activeWindowTitle, out int handle)
         {
@@ -114,7 +114,7 @@ namespace Suflow.Common.Utils
             {
                 activeWindowAppName = Process.GetProcessById((int)processId).MainModule.FileName;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 activeWindowAppName = processId.ToString();
             }

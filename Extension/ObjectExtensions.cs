@@ -28,32 +28,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
 using System;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
-namespace System
-{
-    public static class ObjectExtensions
-    {
-        //public static ExpandoObject ToExpandoObject(this object anonymousObject)
-        //{
-        //    IDictionary<string, object> anonymousDictionary = new RouteValueDictionary(anonymousObject);
-        //    IDictionary<string, object> expando = new ExpandoObject();
-        //    foreach (var item in anonymousDictionary)
-        //        expando.Add(item);
-        //    return (ExpandoObject)expando;
-        //}
+namespace System {
+    public static class ObjectExtensions {
+
+        public static object CloneObject(this Object o) {
+            var t = o.GetType();
+            var properties = t.GetProperties();
+
+            var p = t.InvokeMember("", BindingFlags.CreateInstance, null, o, null);
+
+            foreach (var pi in properties) {
+                if (pi.CanWrite) {
+                    pi.SetValue(p, pi.GetValue(o, null), null);
+                }
+            }
+
+            return p;
+        }
+
+        public static ExpandoObject ToExpandoObject(this object anonymousObject) {
+            IDictionary<string, object> anonymousDictionary = new RouteValueDictionary(anonymousObject);
+            IDictionary<string, object> expando = new ExpandoObject();
+            foreach (var item in anonymousDictionary)
+                expando.Add(item);
+            return (ExpandoObject)expando;
+        }
+
+        public static byte[] ToByteArray(this Object obj) {
+            using (MemoryStream ms = new MemoryStream()) {
+                BinaryFormatter b = new BinaryFormatter();
+                b.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+        }
 
         #region  [GetPropertyValue/SetPropertyValue]
 
-        public static void SetPropertyValue(this Object obj, String propertyName, Object value)
-        {
+        public static void SetPropertyValue(this Object obj, String propertyName, Object value) {
             var objPropertyInfo = obj.GetType().GetProperty(propertyName);
             if (objPropertyInfo == null)
                 throw new Exception(propertyName + " is invalid property.");
             objPropertyInfo.SetValue(obj, value, null);
         }
 
-        public static Object GetPropertyValue(this Object obj, String propertyName)
-        {
+        public static Object GetPropertyValue(this Object obj, String propertyName) {
             var objPropertyInfo = obj.GetType().GetProperty(propertyName);
             if (objPropertyInfo == null)
                 throw new Exception(propertyName + " is invalid property.");
@@ -64,13 +85,16 @@ namespace System
 
         #region [InvokeMethod]
 
-        public static Object InvokeMethod(this Object obj, String methodName)
-        {
+        public static bool HasMethod(this Object obj, String methodName) {
+            var methods = obj.GetType().GetMethods().Where(abc => abc.Name == methodName);
+            return methods.Any();
+        }
+
+        public static Object InvokeMethod(this Object obj, String methodName) {
             return InvokeMethod(obj, methodName, null);
         }
 
-        public static Object InvokeMethod(this Object obj, String methodName, Object[] parameters)
-        {
+        public static Object InvokeMethod(this Object obj, String methodName, Object[] parameters) {
             var objMethodInfo = obj.GetType().GetMethod(methodName);
             return objMethodInfo.Invoke(obj, parameters);
         }
@@ -79,8 +103,7 @@ namespace System
 
         #region [InvokeMethodInSeparateThread]
 
-        public static void InvokoMethodInSeparateThreadProc(Object obj)
-        {
+        public static void InvokoMethodInSeparateThreadProc(Object obj) {
             var arg = (InvokoMethodInSeparateThreadArg)obj;
             Thread.Sleep(0);
             arg.Output.Result = arg.Input.Object.InvokeMethod(arg.Input.MethodName, arg.Input.MethodParameters);
@@ -88,23 +111,18 @@ namespace System
             arg.Output.ManualResetEvent.Set();
         }
 
-        public class InvokoMethodInSeparateThreadArg
-        {
-            public class InputObject
-            {
+        public class InvokoMethodInSeparateThreadArg {
+            public class InputObject {
                 public Object Object { get; set; }
                 public String MethodName { get; set; }
                 public Object[] MethodParameters { get; set; }
             }
 
-            public class OutputObject
-            {
+            public class OutputObject {
                 private object _result;
                 public ManualResetEvent ManualResetEvent { get; set; }
-                public Object Result
-                {
-                    get
-                    {
+                public Object Result {
+                    get {
                         WaitHandle.WaitAll(new[] { ManualResetEvent });
                         return _result;
                     }
@@ -115,20 +133,17 @@ namespace System
             public InputObject Input { get; set; }
             public OutputObject Output { get; set; }
 
-            public InvokoMethodInSeparateThreadArg(Object obj, String methodName, Object[] parameters)
-            {
+            public InvokoMethodInSeparateThreadArg(Object obj, String methodName, Object[] parameters) {
                 Input = new InputObject { Object = obj, MethodName = methodName, MethodParameters = parameters };
                 Output = new OutputObject { ManualResetEvent = new ManualResetEvent(false) };
             }
         }
 
-        public static InvokoMethodInSeparateThreadArg.OutputObject InvokoMethodInSeparateThread(this Object obj, String methodName)
-        {
+        public static InvokoMethodInSeparateThreadArg.OutputObject InvokoMethodInSeparateThread(this Object obj, String methodName) {
             return InvokoMethodInSeparateThread(obj, methodName, null);
         }
 
-        public static InvokoMethodInSeparateThreadArg.OutputObject InvokoMethodInSeparateThread(this Object obj, String methodName, Object[] parameters)
-        {
+        public static InvokoMethodInSeparateThreadArg.OutputObject InvokoMethodInSeparateThread(this Object obj, String methodName, Object[] parameters) {
             var args = new InvokoMethodInSeparateThreadArg(obj, methodName, parameters);
             ThreadPool.QueueUserWorkItem(InvokoMethodInSeparateThreadProc, args);
             return args.Output;
@@ -138,11 +153,9 @@ namespace System
 
         #region [SerializeToXml/DeserializeFromXml]
 
-        public static String SerializeToXml(this Object obj, Encoding encoding)
-        {
+        public static String SerializeToXml(this Object obj, Encoding encoding) {
             using (var memoryStream = new MemoryStream())
-            using (var xmlWriter = XmlWriter.Create(memoryStream, new XmlWriterSettings { Indent = true, Encoding = encoding }))
-            {
+            using (var xmlWriter = XmlWriter.Create(memoryStream, new XmlWriterSettings { Indent = true, Encoding = encoding })) {
                 var xmlSerializer = new XmlSerializer(obj.GetType());
                 xmlSerializer.Serialize(xmlWriter, obj);
                 memoryStream.Position = 0;
@@ -151,17 +164,14 @@ namespace System
             }
         }
 
-        public static T DeserializeFromXml<T>(this Object obj, String xml, Encoding encoding) where T : class
-        {
+        public static T DeserializeFromXml<T>(this Object obj, String xml, Encoding encoding) where T : class {
             return DeserializeFromXml(obj, xml, encoding) as T;
         }
 
-        public static object DeserializeFromXml(this Object obj, String xml, Encoding encoding)
-        {
+        public static object DeserializeFromXml(this Object obj, String xml, Encoding encoding) {
             using (var memoryStream = new MemoryStream(encoding.GetBytes(xml)))
             using (var streamReader = new StreamReader(memoryStream, encoding))
-            using (var xmlTextReader = new XmlTextReader(streamReader))
-            {
+            using (var xmlTextReader = new XmlTextReader(streamReader)) {
                 var xmlSerializer = new XmlSerializer(obj.GetType());
                 return xmlSerializer.Deserialize(xmlTextReader);
             }
@@ -171,20 +181,17 @@ namespace System
 
         #region [SerializeToHtml]
 
-        private static string GetHtmlRow(string trClass, string label, string field)
-        {
+        private static string GetHtmlRow(string trClass, string label, string field) {
             const string tableRowTemplate = "<tr class=\"{0}\"><td class=\"Label\">{1}</td><td class=\"Field\">{2}</td></tr>";
             return string.Format(tableRowTemplate, trClass, label, field);
         }
 
-        private static string GetHtmlRow(string label, string field)
-        {
+        private static string GetHtmlRow(string label, string field) {
             return GetHtmlRow("BuiltInDataType", label, field);
         }
 
         //public static string SerializeToHtml(this Object obj, bool addHeader = false, int maxDepth = 2, List<int> objectHashCodes = null, bool includeDiagnosticDetail = false, List<string> propertiesToIgnore = null)
-        public static string SerializeToHtml(this Object obj, bool addHeader, int maxDepth, List<int> objectHashCodes, bool includeDiagnosticDetail, List<string> propertiesToIgnore)
-        {
+        public static string SerializeToHtml(this Object obj, bool addHeader, int maxDepth, List<int> objectHashCodes, bool includeDiagnosticDetail, List<string> propertiesToIgnore) {
             if (maxDepth == 0)
                 return "[Maximum depth reached]";
             --maxDepth;
@@ -193,44 +200,36 @@ namespace System
             var hashCode = obj.GetHashCode();
             if (obj.GetType().IsBuiltInDataType())
                 return obj.ToString();
-            if (objectHashCodes == null)
-            {
+            if (objectHashCodes == null) {
                 objectHashCodes = new List<int>();
             }
             if (objectHashCodes.Contains(hashCode))
                 return "[Already added to tree]";
             objectHashCodes.Add(hashCode);
             var tableBody = new StringBuilder(addHeader ? "<tr><th>Nome</th><th>Valor</th></tr>" : "");
-            if (obj != null)
-            {
+            if (obj != null) {
                 var properties = from property in obj.GetType().GetProperties() orderby property.Name select property;
                 if (properties.Count() == 0) return obj.ToString();
-                foreach (var property in properties)
-                {
+                foreach (var property in properties) {
                     if (propertiesToIgnore != null && propertiesToIgnore.Contains(property.Name))
                         continue;
                     var trClass = "BuiltInDataType";
                     string propertyStringValue = string.Empty;
                     object propertyValue = null;
-                    try
-                    {
+                    try {
                         propertyValue = obj.GetPropertyValue(property.Name);
                     }
-                    catch
-                    {
+                    catch {
                         //Ignore  if couldnot get attribute value
                     }
-                    if (propertyValue != null)
-                    {
-                        if (!property.PropertyType.IsBuiltInDataType())
-                        {
+                    if (propertyValue != null) {
+                        if (!property.PropertyType.IsBuiltInDataType()) {
                             trClass = "NotBuiltInDataType";
                             if (propertyValue is IEnumerable)
                                 propertyStringValue = SerializeIEnumerableItemsToHtml(addHeader, maxDepth, objectHashCodes, propertyValue, includeDiagnosticDetail, propertiesToIgnore);
                             else propertyStringValue = SerializeToHtml(propertyValue, addHeader, maxDepth, objectHashCodes, includeDiagnosticDetail, propertiesToIgnore);
                         }
-                        else
-                        {
+                        else {
                             propertyStringValue = propertyValue.ToString();
                         }
                     }
@@ -238,8 +237,7 @@ namespace System
                     tableBody.Append(GetHtmlRow(trClass, property.Name + diagnosticDetail, propertyStringValue));
                 }
 
-                if (obj is IEnumerable)
-                {
+                if (obj is IEnumerable) {
                     var field = SerializeIEnumerableItemsToHtml(addHeader, maxDepth, objectHashCodes, obj, includeDiagnosticDetail, propertiesToIgnore);
                     tableBody.Append(GetHtmlRow("NotBuiltInDataType", "Items", field));
                 }
@@ -249,21 +247,18 @@ namespace System
         }
 
         //private static string SerializeIEnumerableItemsToHtml(bool addHeader, int maxDepth, List<int> objectHashCodes, object iEnumarableObject, bool includeDiagnosticDetail = false, List<string> propertiesToIgnore = null)
-        private static string SerializeIEnumerableItemsToHtml(bool addHeader, int maxDepth, List<int> objectHashCodes, object iEnumarableObject, bool includeDiagnosticDetail, List<string> propertiesToIgnore)
-        {
+        private static string SerializeIEnumerableItemsToHtml(bool addHeader, int maxDepth, List<int> objectHashCodes, object iEnumarableObject, bool includeDiagnosticDetail, List<string> propertiesToIgnore) {
             var stringBuilder = new StringBuilder();
             var items = (IEnumerable)iEnumarableObject;
             int itemCount = 0;
             try { itemCount = Int32.Parse(items.GetPropertyValue("Count").ToString()); }
             catch { }
-            try
-            {
+            try {
                 foreach (var item in items)
                     stringBuilder.Append(SerializeToHtml(item, addHeader || itemCount > 1, maxDepth, objectHashCodes, includeDiagnosticDetail, propertiesToIgnore));
                 return stringBuilder.ToString();
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return e.Message;
             }
         }

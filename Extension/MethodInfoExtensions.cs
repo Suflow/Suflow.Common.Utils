@@ -24,29 +24,34 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 
-namespace System
-{
-    public static class MethodInfoExtensions
-    {
-        public static bool ParameterMatches(this MethodInfo methodInfo, object[] args)
-        {
+namespace System {
+
+    /// <summary>
+    /// http://stackoverflow.com/questions/1454363/convert-c-sharp-by-reference-type-to-the-matching-non-by-reference-type
+    /// </summary>
+    public static class MethodInfoExtensions {
+        public static bool ParameterMatches(this MethodInfo methodInfo, object[] args) {
             var result = true;
             var parameterInfos = methodInfo.GetParameters();
             var argLength = args == null ? 0 : args.Length;
-            if (parameterInfos.Length != argLength)
-            {
+            if (parameterInfos.Length != argLength) {
                 result = false;
             }
-            else
-            {
-                for (var index = 0; index < argLength; ++index)
-                {
+            else {
+                for (var index = 0; index < argLength; ++index) {
                     var parameterInfo = parameterInfos[index];
-                    if (args != null)
-                    {
+                    if (args != null) {
                         var arg = args[index];
-                        if (!parameterInfo.ParameterType.IsInstanceOfType(arg))
-                            return false;
+                        var parameterType = parameterInfo.ParameterType;
+                        if (!parameterType.IsInstanceOfType(arg)) {
+                            var elementType = parameterInfo.ParameterType.GetElementType();
+                            if (elementType != null) {
+                                if (!parameterInfo.IsOut) {
+                                    if (!elementType.IsInstanceOfType(arg))
+                                        return false;
+                                }
+                            }
+                        }
                     }
                     else return false;
                 }

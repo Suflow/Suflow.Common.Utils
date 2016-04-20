@@ -25,10 +25,8 @@ using System.Linq;
 using System.Text;
 //using WindowsInstaller.Installer;
 
-namespace Suflow.Common.Utils
-{
-    public class MSIHelper
-    {
+namespace Suflow.Common.Utils {
+    public class MSIHelper {
         //Complete list: http://support.microsoft.com/kb/290158
         public static Dictionary<int, string> ErrorCodes = new Dictionary<int, string>()
         {
@@ -39,44 +37,45 @@ namespace Suflow.Common.Utils
             {1638, "Another version of this product is already installed. Installation of this version cannot continue. To configure or remove the existing version of this product, go to uninstall page"},
         };
 
+        /// <summary>
+        /// not tested yet!!
+        /// </summary>
+        /// <param name="msiPath"></param>
+        /// <param name="destinationFolder"></param>
+        public static void ExtractMSIToAFolder(string msiPath, string destinationFolder) {
+            var args = "/a \"" + msiPath + "\" /qb TARGETDIR=\"" + destinationFolder + "\\";
+            var process = ProcessHelper.Run("msiexec.exe", args, Path.GetDirectoryName(msiPath));
+        }
+
         public static void Run(string action, string msiFile, bool installInQuiteMode = false,
-         string installationDirectory = null, string logFileLocation = null, string[] selectedFeaturesToInstall = null)
-        {
+         string installationDirectory = null, string logFileLocation = null, string[] selectedFeaturesToInstall = null) {
             var args = string.Format("{0} \"{1}\"", action, msiFile);
-            try
-            {
-                if (installInQuiteMode)
-                {
+            try {
+                if (installInQuiteMode) {
                     args += " /qn ";
                 }
-                if (installationDirectory != null)
-                {
+                if (installationDirectory != null) {
                     args += " INSTALLLOCATION=\"" + installationDirectory + "\" ";
                 }
-                if (logFileLocation != null)
-                {
+                if (logFileLocation != null) {
                     args += " /l*v \"" + logFileLocation + "\" "; //x - Extra debugging information
                 }
-                if (selectedFeaturesToInstall != null && selectedFeaturesToInstall.Any())
-                {
+                if (selectedFeaturesToInstall != null && selectedFeaturesToInstall.Any()) {
                     args += " ADDLOCAL=";
-                    foreach (var selectedFeatureToInstall in selectedFeaturesToInstall)
-                    {
+                    foreach (var selectedFeatureToInstall in selectedFeaturesToInstall) {
                         args += selectedFeatureToInstall + ",";
                     }
                     args = args.Substring(0, args.Length - 1) + " ";
                 }
 
-                var process = ProcessHelper.Run("msiexec.exe", args, Path.GetDirectoryName(msiFile), true, null, false);
-                if (process.ExitCode != 0)
-                {
+                var process = ProcessHelper.Run("msiexec.exe", args, Path.GetDirectoryName(msiFile));
+                if (process.ExitCode != 0) {
                     var message = "";
                     ErrorCodes.TryGetValue(process.ExitCode, out message);
                     Console.WriteLine(string.Format("{0} exited with code: {1}. {2} ", msiFile, process.ExitCode, message));
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Console.WriteLine("Error while running msiFile. " + e.Message);
             }
         }
@@ -107,22 +106,18 @@ namespace Suflow.Common.Utils
         //    }
         //}
 
-        public static void SetRevisionNumber(string msiFile, string revisionNumberGuid)
-        {
-            try
-            {
+        public static void SetRevisionNumber(string msiFile, string revisionNumberGuid) {
+            try {
                 var args = string.Format(" \"{0}\" /v \"{1}\"", msiFile, revisionNumberGuid);
                 var process = Process.Start("msiinfo.exe", args);
                 process.WaitForExit(500);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 Console.WriteLine("Error while updating revision number", e.Message);
             }
         }
 
-        public static string GetNewGuid()
-        {
+        public static string GetNewGuid() {
             return string.Format("{{{0}}}", Guid.NewGuid().ToString().ToUpper());
         }
     }

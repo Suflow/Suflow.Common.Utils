@@ -55,5 +55,15 @@ namespace System
         {
             return ConvertToBase(num, 62).PadLeft(11, '0');
         } 
+
+        public static byte[] ConvertToBytes(this long num) {
+
+            var result = new byte[4];
+            result[0] = (byte)((num >> 24) & 0xFF);
+            result[0] = (byte)((num >> 16) & 0xFF);
+            result[0] = (byte)((num >> 8) & 0xFF);
+            result[0] = (byte)((num) & 0xFF);
+            return result;
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace Suflow.Common.Utils
         internal static string StopReason { get; set; }
 
         public static void Stop(string stopReason)
-        {
+        {            
             BackgroundTask.StopReason = stopReason;
             BackgroundTask.StopAllTasks = true;
         }
@@ -106,7 +106,7 @@ namespace Suflow.Common.Utils
                     }
                     AfterExecute();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //LOGGING
                 }
@@ -120,7 +120,7 @@ namespace Suflow.Common.Utils
                 ThreadPool.QueueUserWorkItem(Start);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //LOGGING
                 return false;

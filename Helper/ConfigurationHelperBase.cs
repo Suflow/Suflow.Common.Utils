@@ -47,7 +47,7 @@ namespace Suflow.Common.Utils
                 var xml = File.ReadAllText(ConfigurationFilePath);
                 if (xml.Length > 0)
                 {
-                    return this.DeserializeFromXml(xml, Encoding.ASCII) as ConfigurationBase;
+                    return this.DeserializeFromXml(xml, Encoding.Unicode) as ConfigurationBase;
                 }
             }
             return this;
@@ -55,7 +55,7 @@ namespace Suflow.Common.Utils
 
         public virtual void Save()
         {
-            var xml = this.SerializeToXml(Encoding.ASCII);
+            var xml = this.SerializeToXml(Encoding.Unicode);
             File.Delete(ConfigurationFilePath);
             File.WriteAllText(ConfigurationFilePath, xml);
         }

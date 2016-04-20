@@ -22,12 +22,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
+
 
 namespace Suflow.Common.Utils
 {
@@ -54,7 +51,7 @@ namespace Suflow.Common.Utils
                     return true;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -89,7 +86,7 @@ namespace Suflow.Common.Utils
                     return result;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

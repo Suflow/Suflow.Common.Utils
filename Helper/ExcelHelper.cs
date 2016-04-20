@@ -27,6 +27,10 @@ using System.Globalization;
 
 namespace Suflow.Common.Utils
 {
+
+    /// <summary>
+    /// http://csharphelper.com/blog/2016/02/make-an-excel-chart-in-c/
+    /// </summary>
     public static class ExcelHelper
     {
         public static string ExcelVersion = "12.0";

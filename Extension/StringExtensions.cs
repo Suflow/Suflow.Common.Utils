@@ -27,10 +27,8 @@ using System;
 using System.IO.Compression;
 using System.Security.Cryptography;
 
-namespace System
-{
-    public static class StringExtensions
-    {
+namespace System {
+    public static class StringExtensions {
         #region Regex
 
         private const string _regexUrlExpression = @"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?$";
@@ -51,25 +49,25 @@ namespace System
 
         #endregion
 
-        public static byte[] ToByteArray(this string str)
-        {
+        public static byte[] ToByteArray(this string str) {
             var encoding = new System.Text.UTF8Encoding();
             return encoding.GetBytes(str);
         }
 
-        public static string ToHexString(this string asciiString)
-        {
+        public static string ToHexString(this string asciiString) {
             string hex = "";
-            foreach (char c in asciiString)
-            {
+            foreach (char c in asciiString) {
                 int tmp = c;
                 hex += String.Format("{0:x2}", (uint)System.Convert.ToUInt32(tmp.ToString()));
             }
             return hex;
         }
 
-        public static MemoryStream ToMemoryStream(this string str, Encoding encoding)
-        {
+        public static MemoryStream ToMemoryStream(this string str) {
+            return ToMemoryStream(str, new System.Text.UTF8Encoding());
+        }
+
+        public static MemoryStream ToMemoryStream(this string str, Encoding encoding) {
             var encodedString = encoding.GetBytes(str);
             var memoryStream = new MemoryStream(encodedString);
             memoryStream.Flush();
@@ -77,46 +75,50 @@ namespace System
             return memoryStream;
         }
 
-        public static bool IsUrl(this string str)
-        {
+        public static bool HasValue(this string str) {
+            return !string.IsNullOrEmpty(str);
+        }
+
+        public static string FormatCurrent(this string str, params object[] args) {
+            return string.Format(str, args);
+        }
+
+        public static string Format(this string str, params object[] args) {
+            return string.Format(str, args);
+        }
+
+        public static bool IsUrl(this string str) {
             return _regexUrl.IsMatch(str);
         }
 
-        public static bool IsPotentialXssAttack(this string str)
-        {
+        public static bool IsPotentialXssAttack(this string str) {
             return _regexPotentialXssAttack.IsMatch(str);
         }
 
-        public static bool IsNumber(this string str)
-        {
+        public static bool IsNumber(this string str) {
             return _regexNumber.IsMatch(str);
         }
 
-        public static bool IsInteger(this string str)
-        {
+        public static bool IsInteger(this string str) {
             return _regexInteger.IsMatch(str);
         }
 
-        public static bool IsEmail(this string str)
-        {
+        public static bool IsEmail(this string str) {
             return _regexEmail.IsMatch(str);
         }
 
-        public static string Quote(this string str)
-        {
+        public static string Quote(this string str) {
             return "\"" + str + "\"";
         }
 
-        public static string Truncate(this string str, int maxLength)
-        {
+        public static string Truncate(this string str, int maxLength) {
             if (str.Length > maxLength)
                 return str.Substring(0, maxLength);
             else
                 return str;
         }
 
-        public static string TruncateWithEllipsis(this string str, int maxLength)
-        {
+        public static string TruncateWithEllipsis(this string str, int maxLength) {
             if (str.Length > (maxLength - 3))
                 return String.Format("{0}...", Truncate(str, maxLength - 3));
             else
@@ -130,8 +132,7 @@ namespace System
         /// Contain only lowercase** characters a-z or the dash character -
         /// Not start with or end with a dash -
         /// </summary>
-        public static string GetSubdomainComplainName(this string str)
-        {
+        public static string GetSubdomainComplainName(this string str) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < str.Length; i++)
                 if ((str[i] >= 'A' && str[i] <= 'z') || (str[i] == '-') || (str[i] >= '0' && str[i] <= '9'))
@@ -143,8 +144,7 @@ namespace System
         }
 
 
-        public static string RemoveSpecialCharacters(this string str)
-        {
+        public static string RemoveSpecialCharacters(this string str) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < str.Length; i++)
                 if ((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'z' || (str[i] == '.' || str[i] == '_')))
@@ -152,14 +152,10 @@ namespace System
             return sb.ToString();
         }
 
-        public static string Zip(this string str)
-        {
-            using (var mStream = new MemoryStream())
-            {
-                using (var dStream = new DeflateStream(mStream, CompressionMode.Compress))
-                {
-                    using (var sWRiter = new StreamWriter(dStream, Encoding.UTF8))
-                    {
+        public static string Zip(this string str) {
+            using (var mStream = new MemoryStream()) {
+                using (var dStream = new DeflateStream(mStream, CompressionMode.Compress)) {
+                    using (var sWRiter = new StreamWriter(dStream, Encoding.Unicode)) {
                         sWRiter.Write(str);
                     }
                 }
@@ -167,36 +163,49 @@ namespace System
             }
         }
 
-        public static string UnZip(this string str)
-        {
+        public static string UnZip(this string str) {
             var inputBuffer = Convert.FromBase64String(str);
-            using (var mStream = new MemoryStream(inputBuffer))
-            {
-                using (var dStream = new DeflateStream(mStream, CompressionMode.Decompress))
-                {
-                    using (var sReader = new StreamReader(dStream, Encoding.UTF8))
-                    {
+            using (var mStream = new MemoryStream(inputBuffer)) {
+                using (var dStream = new DeflateStream(mStream, CompressionMode.Decompress)) {
+                    using (var sReader = new StreamReader(dStream, Encoding.Unicode)) {
                         return sReader.ReadToEnd();
                     }
                 }
             }
         }
 
-        public static string CalculateMD5Hash(this string input)
-        {
+        public static string CalculateMD5Hash(this string input) {
             // step 1, calculate MD5 hash from input
             var md5 = MD5.Create();
-            var inputBytes = Encoding.ASCII.GetBytes(input);
+            var inputBytes = Encoding.Unicode.GetBytes(input);
             var hash = md5.ComputeHash(inputBytes);
 
             // step 2, convert byte array to hex string
             var sb = new StringBuilder();
-            for (var i = 0; i < hash.Length; i++)
-            {
+            for (var i = 0; i < hash.Length; i++) {
                 sb.Append(hash[i].ToString("X2"));
             }
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Will convert ProductName to Product name
+        /// </summary>
+        public static string ToPhrase(this string input) {
+            if (string.IsNullOrEmpty(input))
+                return input;
+            string result = null;
+            foreach (char c in input) {
+                string s = c.ToString();
+                if (result == null) {
+                    s = s.ToUpper();
+                }
+                else if (s == s.ToUpper()) {
+                    s = " " + s.ToLower();
+                }
+                result += s;
+            }
+            return result;
+        }
     }
 }

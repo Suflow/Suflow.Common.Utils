@@ -17,32 +17,22 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 ////////////////////////////////////////////////////////////////////////////////
-using Microsoft.CSharp;
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Suflow.Common.Utils
-{
-    public class CompilationAndExecutionHelper
-    {
-        static void Run(string[] args)
-        {
-            var csc = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } });
-            var parameters = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" }, "foo.exe", true);
-            parameters.GenerateExecutable = true;
-            CompilerResults results = csc.CompileAssemblyFromSource(parameters,
-            @"using System.Linq;
-            class Program {
-              public static void Main(string[] args) {
-                var q = from i in Enumerable.Range(1,100)
-                          where i % 2 == 0
-                          select i;
-              }
-            }");
-            results.Errors.Cast<CompilerError>().ToList().ForEach(error => Console.WriteLine(error.ErrorText));
+namespace System {
+    public static class StreamExtension {
+        public static byte[] ToByteArray(this Stream stream) {
+            stream.Position = 0;
+            BinaryReader b = new BinaryReader(stream);
+            if (stream.Length > int.MaxValue)
+                throw new Exception("Maxumum length supported by this method is: " + int.MaxValue);
+            int length = (int)stream.Length;
+            byte[] binData = b.ReadBytes(length);
+            return binData;
         }
     }
 }
